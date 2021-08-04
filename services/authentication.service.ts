@@ -23,9 +23,6 @@ export default class AuthenticationService extends Service {
 				// Validator user before registration actions.
 				entityValidator: Validate.user,
 			},
-			methods: {
-
-			},
 			actions: {
 				/**
 				 * Register  action.
@@ -41,11 +38,13 @@ export default class AuthenticationService extends Service {
 						const user = await this.transformDocuments(
 							ctx,
 							{},
-							{...userData},
+							{ ...userData }
 						);
 						console.log("user doc", user);
-						return await new Register(entity,{...user}).$handler(ctx,user);
-
+						return await new Register(entity, { ...user }).$handler(
+							ctx,
+							user
+						);
 					},
 				},
 				login: {
@@ -53,33 +52,30 @@ export default class AuthenticationService extends Service {
 					params: { ...Login.params },
 					async handler(ctx) {
 						try {
-
-						const user = await new Login().$handler(ctx);
-						// Transform user entity (remove password and all protected fields)
-                        console.log("user",user);
-						const doc = await this.transformDocuments(
-							ctx,
-							{},
-							JSON.parse(user)
-						);
-						doc.password = null;
-						return await new Login().transformEntity(
-							doc,
-							true,
-							ctx.meta.token
-						);
+							const user = await new Login().$handler(ctx);
+							// Transform user entity (remove password and all protected fields)
+							console.log("user", user);
+							const doc = await this.transformDocuments(
+								ctx,
+								{},
+								JSON.parse(user)
+							);
+							doc.password = null;
+							return await new Login().transformEntity(
+								doc,
+								true,
+								ctx.meta.token
+							);
 						} catch (err) {
-							console.log("catch",err);
+							console.log("catch", err);
 							throw new MoleculerClientError(
 								"invalid credentials",
 								400,
-								"",
-
+								""
 							);
 						}
 					},
 				},
-
 			},
 		});
 	}

@@ -43,11 +43,7 @@ export class Login extends Mixin(Password, Token, UserAction) {
 		);
 		if (!res) {
 			// Let the error be generic
-			throw new MoleculerClientError(
-				"invalid password or password",
-				422,
-				""
-			);
+			throw new MoleculerClientError("invalid password ", 422, "");
 		}
 		return user;
 	}
