@@ -3,7 +3,8 @@
 import { Service, ServiceBroker, ServiceSchema } from "moleculer";
 import Validate from "../src/utils/validators"
 import DbConnection from "../mixins/db.mixin";
-import CartActions from "../src/services/products/cartActions"
+import { AddToCart } from "../src/api/addToCart";
+import { GetCartSummary } from "../src/api/getCartSummary";
 export default class ProductsService extends Service{
 
 	private DbMixin = new DbConnection("products").start();
@@ -20,25 +21,18 @@ export default class ProductsService extends Service{
 			},
 			actions: {
 				addProductToCart: {
-					rest: "POST /:userId/cart",
-					params: {
-						userId: "string",
-						product: { type: "object" },
-					},
+					rest: {...AddToCart.rest},
+					params: {...AddToCart.params},
 					async handler(ctx) {
 						const entity = ctx.params.product
 						await this.validateEntity(entity)
-						const res = await new CartActions(ctx.params.userId, null).createCart(entity);
-
-					    await this.broker.cacher.clean(ctx.params.userId)
-						return {message:"Item added to cart",data:res}
+						await this.broker.cacher.clean(ctx.params.userId)
+						return await new AddToCart().$handler(ctx)	
 					 }
 				},
 				getCartSummary: {
-					rest: "GET /:userId/cart/summary",
-					params: {
-						userId: "string",
-					},
+					rest: {...GetCartSummary.rest},
+					params: {...GetCartSummary.params},
 					async handler(ctx) {
 						const cache = await this.broker.cacher.get(ctx.params.userId)
 						if (cache) {
@@ -46,7 +40,7 @@ export default class ProductsService extends Service{
 							// @ts-expect-error
 							return JSON.parse(cache)
 						}
-						const res =  await new CartActions(ctx.params.userId, null).getCartSummary();
+						const res =  await new GetCartSummary().$handler(ctx)
 						await this.broker.cacher.set(ctx.params.userId, JSON.stringify(res))
 						
 						return res
