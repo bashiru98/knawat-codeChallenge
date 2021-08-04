@@ -8,7 +8,7 @@ import { UserAction } from "../services/users/index"
 import { Password } from "../utils/password"
 
 export class Register extends Mixin(Password,Token,UserAction) {
-    static entity: any;
+  
     static params : {
         user: { type: "object" },
     }
