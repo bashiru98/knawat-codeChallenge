@@ -13,7 +13,7 @@ export default class Validate {
         name: "string|min:3",
         price: "number|positive",
         productId: "string",
-        qauntity: "number|positive",
+        quantity: "number|positive",
     }
 
 }

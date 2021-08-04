@@ -3,7 +3,7 @@ import { Register } from "../src/api/register";
 import { Password } from "../src/utils/password"
 import Validate from "../src/utils/validators"
 import { Service, ServiceBroker } from "moleculer";
-import { Token } from "../src/utils/token"
+import { userSchema } from "../src/models/user"
 import DbConnection from "../mixins/db.mixin";
 import { UserAction } from "../src/services/users/index"
 const { MoleculerClientError } = require("moleculer").Errors;
@@ -23,7 +23,14 @@ export default class AuthenticationService extends Service {
 				entityValidator: Validate.user
 			},
 			methods: {
-				
+				transformEntity(user, withToken, token) {
+					if (user) {
+						if (withToken) {
+							user.token = token || this.getToken(user);
+						}
+					}
+					return { user };
+				},
 			},
 			actions: {
 				/**
@@ -32,13 +39,19 @@ export default class AuthenticationService extends Service {
 				 */
 				register: {
 					rest: { ...Register.rest },
-					params: {
-						user: { type: "object" },
-					},
+					params: { ...Register.params },
 					async handler(ctx) {
 						const entity = ctx.params.user;
 						await this.validateEntity(entity);
-						await new Register(entity,this.broker).$handler(ctx)
+						const userData = userSchema(entity)
+						const user = await this.transformDocuments(
+							ctx,
+							{},
+							{...userData},
+						);
+						console.log("user doc",user)
+						return await new Register(entity, { ...user }).$handler(ctx,user)
+
 					},
 				},
 				login: {
@@ -58,7 +71,8 @@ export default class AuthenticationService extends Service {
 					async handler(ctx) {
 						try {
 							const { email, password} = ctx.params.user;
-						const user = await new UserAction().getUser(email)
+							const user = await new UserAction().getUser(email)
+							console.log("login user",user)
 						console.log("cat",JSON.parse(user).password)
 						if (!user) {
 							throw new MoleculerClientError(
@@ -94,6 +108,7 @@ export default class AuthenticationService extends Service {
 							ctx.meta.token
 						);
 						} catch (err) {
+							console.log("catch",err)
 							throw new MoleculerClientError(
 								"invalid credentials",
 								400,

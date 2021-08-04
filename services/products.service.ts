@@ -16,7 +16,7 @@ export default class ProductsService extends Service{
 			mixins: [this.DbMixin],
 			settings: {
 				// Validator for cart creation.
-				entityValidator: Validate.product,
+				entityValidator: {...Validate.product },
 			},
 			actions: {
 				addProductToCart: {
@@ -29,6 +29,7 @@ export default class ProductsService extends Service{
 						const entity = ctx.params.product
 						await this.validateEntity(entity)
 						const res = await new CartActions(ctx.params.userId, null).createCart(entity);
+
 					    await this.broker.cacher.clean(ctx.params.userId)
 						return {message:"Item added to cart",data:res}
 					 }
@@ -41,7 +42,7 @@ export default class ProductsService extends Service{
 					async handler(ctx) {
 						const cache = await this.broker.cacher.get(ctx.params.userId)
 						if (cache) {
-							
+							console.log("from cache",cache)
 							// @ts-expect-error
 							return JSON.parse(cache)
 						}
