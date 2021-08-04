@@ -82,7 +82,7 @@ export default class AuthenticationService extends Service {
 
 			actions: {
 				/**
-				 * Say a 'Hello' action.
+				 * Register  action.
 				 *
 				 */
 				register: {
