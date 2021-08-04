@@ -1,10 +1,9 @@
 "use strict";
-
-import { v4 as uuidv4 } from "uuid";
+import { Register } from "../src/api/register";
 import { Password } from "../src/utils/password"
 import Validate from "../src/utils/validators"
 import { Service, ServiceBroker } from "moleculer";
-import { Token } from "../src/utils/token"
+import { userSchema } from "../src/models/user"
 import DbConnection from "../mixins/db.mixin";
 import { UserAction } from "../src/services/users/index"
 const { MoleculerClientError } = require("moleculer").Errors;
@@ -24,21 +23,6 @@ export default class AuthenticationService extends Service {
 				entityValidator: Validate.user
 			},
 			methods: {
-				/**
-				 * Generate a JWT token from user entity
-				 *
-				 * @param {Object} user
-				 */
-				getToken(user) {
-                  return Token.generateToken(user)
-				},
-
-				/**
-				 * Transform returned user entity. Generate JWT token if neccessary.
-				 *
-				 * @param {Object} user
-				 * @param {Boolean} withToken
-				 */
 				transformEntity(user, withToken, token) {
 					if (user) {
 						if (withToken) {
@@ -54,57 +38,20 @@ export default class AuthenticationService extends Service {
 				 *
 				 */
 				register: {
-					rest: {
-						method: "POST",
-						path: "/register",
-					},
-					params: {
-						user: { type: "object" },
-					},
+					rest: { ...Register.rest },
+					params: { ...Register.params },
 					async handler(ctx) {
-						const userId = uuidv4();
 						const entity = ctx.params.user;
 						await this.validateEntity(entity);
-
-						const userExist =
-							await new UserAction().checkIfEmailExist(
-								entity.email
-							);
-						if (userExist) {
-							throw new MoleculerClientError(
-								"Email already exist!",
-								400,
-								"",
-							);
-						}
-
-						entity.password = await Password.toHash(entity.password)
-
-						entity.createdAt = new Date();
-
-						const userData = {
-							userId,
-							email: entity.email,
-							password: entity.password,
-							username: entity.username,
-							collection: "users",
-							createdAt: entity.createdAt,
-						};
-					    new UserAction().createUser(userData);
-
+						const userData = userSchema(entity)
 						const user = await this.transformDocuments(
 							ctx,
 							{},
-							userData,
+							{...userData},
 						);
-						const json = await this.transformEntity(
-							user,
-							true,
-							ctx.meta.token
-						);
-						await this.entityChanged("created", json, ctx);
+						console.log("user doc", user)
+						return await new Register(entity,{...user}).$handler(ctx,user)
 
-						return json;
 					},
 				},
 				login: {
@@ -124,7 +71,8 @@ export default class AuthenticationService extends Service {
 					async handler(ctx) {
 						try {
 							const { email, password} = ctx.params.user;
-						const user = await new UserAction().getUser(email)
+							const user = await new UserAction().getUser(email)
+							console.log("login user",user)
 						console.log("cat",JSON.parse(user).password)
 						if (!user) {
 							throw new MoleculerClientError(
@@ -135,18 +83,18 @@ export default class AuthenticationService extends Service {
 							);
 						}
 
-						const res = await Password.compare(
-							JSON.parse(user).password,
-							password,
-						);
-						if (!res) {
-							// let the error be generic 
-							throw new MoleculerClientError(
-								"invalid password or password",
-								422,
-								"",
-							);
-						}
+						// const res = await Password.compare(
+						// 	JSON.parse(user).password,
+						// 	password,
+						// );
+						// if (!res) {
+						// 	// let the error be generic 
+						// 	throw new MoleculerClientError(
+						// 		"invalid password or password",
+						// 		422,
+						// 		"",
+						// 	);
+						// }
 						// Transform user entity (remove password and all protected fields)
 
 						const doc = await this.transformDocuments(
@@ -160,6 +108,7 @@ export default class AuthenticationService extends Service {
 							ctx.meta.token
 						);
 						} catch (err) {
+							console.log("catch",err)
 							throw new MoleculerClientError(
 								"invalid credentials",
 								400,

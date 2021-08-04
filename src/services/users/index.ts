@@ -27,7 +27,7 @@ export class UserAction {
 		}
 	}
 
-	public async checkIfEmailExist(email: string): Promise<boolean> {
+	public  async checkIfEmailExist(email: string): Promise<boolean> {
 		return await checkEmail(email,this._client)
 	}
 
