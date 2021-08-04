@@ -1,6 +1,7 @@
 "use strict";
+import { Mixin } from 'ts-mixer';
 import { Register } from "../src/api/register";
-import { Password } from "../src/utils/password"
+import { Login } from "../src/api/login";
 import Validate from "../src/utils/validators"
 import { Service, ServiceBroker } from "moleculer";
 import { userSchema } from "../src/models/user"
@@ -70,39 +71,17 @@ export default class AuthenticationService extends Service {
 					},
 					async handler(ctx) {
 						try {
-							const { email, password} = ctx.params.user;
-							const user = await new UserAction().getUser(email)
-							console.log("login user",user)
-						console.log("cat",JSON.parse(user).password)
-						if (!user) {
-							throw new MoleculerClientError(
-								"Email or password is invalid!",
-								400,
-								"",
-								[{ field: "email", message: "is not found" }]
-							);
-						}
-
-						// const res = await Password.compare(
-						// 	JSON.parse(user).password,
-						// 	password,
-						// );
-						// if (!res) {
-						// 	// let the error be generic 
-						// 	throw new MoleculerClientError(
-						// 		"invalid password or password",
-						// 		422,
-						// 		"",
-						// 	);
-						// }
+							
+						const user = await new Login().$handler(ctx)
 						// Transform user entity (remove password and all protected fields)
-
+                        console.log("user",user)
 						const doc = await this.transformDocuments(
 							ctx,
 							{},
 							JSON.parse(user)
 						);
-						return await this.transformEntity(
+						doc.password = null
+						return await new Login().transformEntity(
 							doc,
 							true,
 							ctx.meta.token
