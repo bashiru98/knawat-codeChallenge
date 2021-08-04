@@ -2,10 +2,8 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { Password } from "../src/utils/password"
-
+import Validate from "../src/utils/validators"
 import { Service, ServiceBroker } from "moleculer";
-
-import jwt from "jsonwebtoken";
 
 import DbConnection from "../mixins/db.mixin";
 
@@ -30,14 +28,8 @@ export default class AuthenticationService extends Service {
 				// Available fields in the responses
 				fields: ["_id", "username", "email"],
 
-				// Validator for the `create` & `insert` actions.
-				entityValidator: {
-					username: { type: "string", min: 2 },
-					password: { type: "string", min: 6 },
-					email: { type: "email" },
-					bio: { type: "string", optional: true },
-					image: { type: "string", optional: true },
-				},
+				// Validator user before registration actions.
+				entityValidator: Validate.user
 			},
 			methods: {
 				/**
@@ -82,7 +74,7 @@ export default class AuthenticationService extends Service {
 
 			actions: {
 				/**
-				 * Say a 'Hello' action.
+				 * Register  action.
 				 *
 				 */
 				register: {
