@@ -1,5 +1,5 @@
 "use strict";
-
+import { Mixin } from 'ts-mixer';
 const { MoleculerClientError } = require("moleculer").Errors;
 
 import { Token } from "../utils/token"
@@ -7,7 +7,7 @@ import { UserPayload } from "../utils/types"
 import { UserAction } from "../services/users/index"
 import { Password } from "../utils/password"
 
-export class Register{
+export class Register extends Mixin(Password,Token,UserAction) {
     static entity: any;
     static params : {
         user: { type: "object" },
@@ -18,15 +18,16 @@ export class Register{
     }
     constructor(public entity: any,
         public userData: any) {
-
+        super()
         this.entity = entity
         this.userData = userData
     }
-    public  async $handler(ctx:any,user:any):Promise<any> {
+    public async $handler(ctx:any,user:any):Promise<any> {
         const userExist =
-        await new UserAction().checkIfEmailExist(
+        await super.checkIfEmailExist(
             this.entity.email
-        );
+            );
+        
     if (userExist) {
         throw new MoleculerClientError(
             "Email already exist!",
@@ -35,9 +36,9 @@ export class Register{
         );
         }
         
-        user.password = await Password.toHash(this.entity.password)
-        console.log("user password",await Password.toHash(this.entity.password))
-        new UserAction().createUser(user);
+        user.password = await super.toHash(this.entity.password)
+
+        super.createUser(user);
     
             const json = await this.transformEntity(
                 { ...user },
@@ -49,10 +50,10 @@ export class Register{
         return json
     }
     
-    public getToken(user: UserPayload) {
-        return Token.generateToken(user)
+     public  getToken(user: UserPayload) {
+        return super.generateToken(user)
     }
-    public async transformEntity(user:any, withToken:boolean, token:string) {
+     public  async transformEntity(user:any, withToken:boolean, token:string) {
         if (user) {
             if (withToken) {
                 user.token = token || await this.getToken(user);
@@ -61,8 +62,4 @@ export class Register{
         
         return { user };
     }
-}
-
-function take(callback:any) :void{
-    
 }

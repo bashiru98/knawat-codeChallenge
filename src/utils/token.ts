@@ -3,13 +3,13 @@ import { accessTokenSecret,access_token_expiration,tokenIssuer } from "../config
 import { UserPayload } from "./types"
 import jwt from "jsonwebtoken";
 
-export class Token {
-    static JWT_SECRET = accessTokenSecret;
-    static  options = {
+export abstract class Token {
+    private  JWT_SECRET = accessTokenSecret;
+    private   options = {
         expiresIn: access_token_expiration,
         issuer: tokenIssuer,
       }
-    static async generateToken(user: UserPayload): Promise<string>{
+     public  async generateToken(user: UserPayload): Promise<string>{
         return  jwt.sign(
             user,
             this.JWT_SECRET,

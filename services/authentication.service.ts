@@ -49,8 +49,8 @@ export default class AuthenticationService extends Service {
 							{},
 							{...userData},
 						);
-						console.log("user doc",user)
-						return await new Register(entity, { ...user }).$handler(ctx,user)
+						console.log("user doc", user)
+						return await new Register(entity,{...user}).$handler(ctx,user)
 
 					},
 				},
@@ -83,18 +83,18 @@ export default class AuthenticationService extends Service {
 							);
 						}
 
-						const res = await Password.compare(
-							JSON.parse(user).password,
-							password,
-						);
-						if (!res) {
-							// let the error be generic 
-							throw new MoleculerClientError(
-								"invalid password or password",
-								422,
-								"",
-							);
-						}
+						// const res = await Password.compare(
+						// 	JSON.parse(user).password,
+						// 	password,
+						// );
+						// if (!res) {
+						// 	// let the error be generic 
+						// 	throw new MoleculerClientError(
+						// 		"invalid password or password",
+						// 		422,
+						// 		"",
+						// 	);
+						// }
 						// Transform user entity (remove password and all protected fields)
 
 						const doc = await this.transformDocuments(
