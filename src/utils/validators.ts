@@ -9,4 +9,11 @@ export default class Validate {
         image: { type: "string", optional: true },
     }
 
+    static product = {
+        name: "string|min:3",
+        price: "number|positive",
+        productId: "string",
+        qauntity: "number|positive",
+    }
+
 }
