@@ -4,12 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { Password } from "../src/utils/password"
 import Validate from "../src/utils/validators"
 import { Service, ServiceBroker } from "moleculer";
-
+import { Token } from "../src/utils/token"
 import DbConnection from "../mixins/db.mixin";
-
 import { UserAction } from "../src/services/users/index"
 const { MoleculerClientError } = require("moleculer").Errors;
-
 
 export default class AuthenticationService extends Service {
 	private DbMixin = new DbConnection("users").start();
@@ -22,12 +20,6 @@ export default class AuthenticationService extends Service {
 
 			mixins: [this.DbMixin],
 			settings: {
-				/** Secret for JWT */
-				JWT_SECRET: process.env.JWT_SECRET || "knawat-secret",
-				issuer: "knawat-secret",
-				// Available fields in the responses
-				fields: ["_id", "username", "email"],
-
 				// Validator user before registration actions.
 				entityValidator: Validate.user
 			},
@@ -37,22 +29,8 @@ export default class AuthenticationService extends Service {
 				 *
 				 * @param {Object} user
 				 */
-				generateJWT(user) {
-					
-					const today = new Date();
-					const exp = new Date(today);
-					exp.setDate(today.getDate() + 60);
-
-					return jwt.sign(
-						{
-							username: user.username,
-							id:user.userId,
-							email: user.email,
-							createdAt:user.createdAt,
-							exp: Math.floor(exp.getTime() / 1000),
-						},
-						this.settings.JWT_SECRET
-					);
+				getToken(user) {
+                  return Token.generateToken(user)
 				},
 
 				/**
@@ -64,14 +42,12 @@ export default class AuthenticationService extends Service {
 				transformEntity(user, withToken, token) {
 					if (user) {
 						if (withToken) {
-							user.token = token || this.generateJWT(user);
+							user.token = token || this.getToken(user);
 						}
 					}
-
 					return { user };
 				},
 			},
-
 			actions: {
 				/**
 				 * Register  action.
