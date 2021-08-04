@@ -1,12 +1,12 @@
 "use strict";
-import { Mixin } from 'ts-mixer';
+
+import { Service, ServiceBroker } from "moleculer";
 import { Register } from "../src/api/register";
 import { Login } from "../src/api/login";
-import Validate from "../src/utils/validators"
-import { Service, ServiceBroker } from "moleculer";
-import { userSchema } from "../src/models/user"
+import Validate from "../src/utils/validators";
+import { userSchema } from "../src/models/user";
 import DbConnection from "../mixins/db.mixin";
-import { UserAction } from "../src/services/users/index"
+import { UserAction } from "../src/services/users/index";
 const { MoleculerClientError } = require("moleculer").Errors;
 
 export default class AuthenticationService extends Service {
@@ -14,14 +14,14 @@ export default class AuthenticationService extends Service {
 	public constructor(public broker: ServiceBroker) {
 		super(broker);
 		new UserAction().createIndex("users");
-	
+
 		this.parseServiceSchema({
 			name: "authentication",
 
 			mixins: [this.DbMixin],
 			settings: {
 				// Validator user before registration actions.
-				entityValidator: Validate.user
+				entityValidator: Validate.user,
 			},
 			methods: {
 
@@ -37,14 +37,14 @@ export default class AuthenticationService extends Service {
 					async handler(ctx) {
 						const entity = ctx.params.user;
 						await this.validateEntity(entity);
-						const userData = userSchema(entity)
+						const userData = userSchema(entity);
 						const user = await this.transformDocuments(
 							ctx,
 							{},
 							{...userData},
 						);
-						console.log("user doc", user)
-						return await new Register(entity,{...user}).$handler(ctx,user)
+						console.log("user doc", user);
+						return await new Register(entity,{...user}).$handler(ctx,user);
 
 					},
 				},
@@ -53,28 +53,28 @@ export default class AuthenticationService extends Service {
 					params: { ...Login.params },
 					async handler(ctx) {
 						try {
-							
-						const user = await new Login().$handler(ctx)
+
+						const user = await new Login().$handler(ctx);
 						// Transform user entity (remove password and all protected fields)
-                        console.log("user",user)
+                        console.log("user",user);
 						const doc = await this.transformDocuments(
 							ctx,
 							{},
 							JSON.parse(user)
 						);
-						doc.password = null
+						doc.password = null;
 						return await new Login().transformEntity(
 							doc,
 							true,
 							ctx.meta.token
 						);
 						} catch (err) {
-							console.log("catch",err)
+							console.log("catch",err);
 							throw new MoleculerClientError(
 								"invalid credentials",
 								400,
 								"",
-		
+
 							);
 						}
 					},

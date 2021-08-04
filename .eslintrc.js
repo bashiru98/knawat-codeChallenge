@@ -25,7 +25,7 @@ module.exports = {
 			},
 		],
 		"@typescript-eslint/indent": [
-			"on",
+			"off",
 			4,
 			{
 				FunctionDeclaration: {
