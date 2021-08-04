@@ -1,30 +1,30 @@
 "use strict";
 
 const { MoleculerClientError } = require("moleculer").Errors;
-const redis = require('redis');
-const util = require('util');
+const redis = require("redis");
+const util = require("util");
 
 const client = redis.createClient({ host: process.env.REDIS_URL ?? "127.0.0.1" });
 client.hget = util.promisify(client.hget);
 
-client.on('connect', async () => {
- 
-  console.log('Client connected to redis...')
-})
+client.on("connect", async () => {
 
-client.on('ready', () => {
-  console.log('Redis client ready')
-})
+  console.log("Client connected to redis...");
+});
 
-client.on('error', (err: Error) => {
-    console.log(err.message)
-    throw new MoleculerClientError("Redis client connection error")
-})
+client.on("ready", () => {
+  console.log("Redis client ready");
+});
 
-
-process.on('SIGINT', () => {
- client.quit()
-})
+client.on("error", (err: Error) => {
+    console.log(err.message);
+    throw new MoleculerClientError("Redis client connection error");
+});
 
 
-export { client }
+process.on("SIGINT", () => {
+ client.quit();
+});
+
+
+export { client };

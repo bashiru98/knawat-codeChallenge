@@ -1,9 +1,9 @@
 "use strict";
 
 import { client } from "../../loaders/elastic";
-import { checkEmail } from "./emailCheck"
-import { registerHelper } from "./register"
-import { fetchUser } from "./getUser"
+import { checkEmail } from "./emailCheck";
+import { registerHelper } from "./register";
+import { fetchUser } from "./getUser";
 
 interface UserPayload {
 	collection: string;
@@ -27,16 +27,15 @@ export class UserAction {
 		}
 	}
 
-	public  async checkIfEmailExist(email: string): Promise<boolean> {
-		return await checkEmail(email,this._client)
+	public async checkIfEmailExist(email: string): Promise<boolean> {
+		return await checkEmail(email, this._client);
 	}
 
 	public async createUser(userData: UserPayload) {
-		return await registerHelper(userData,this._client)
+		return await registerHelper(userData, this._client);
 	}
 
-    public async getUser(email: string) {
-        return await fetchUser(email,this._client)
-    }
-    
+	public async getUser(email: string) {
+		return await fetchUser(email, this._client);
+	}
 }

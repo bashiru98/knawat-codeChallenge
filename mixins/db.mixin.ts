@@ -42,7 +42,7 @@ export default class Connection
 	}
 
 	public start() {
-		
+
 		this.schema.adapter = new MongoAdapter(
 			process.env.MONGO_URI ?? "mongodb://localhost:27017/moleculer"
 		);

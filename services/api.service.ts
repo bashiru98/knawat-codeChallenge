@@ -1,11 +1,11 @@
 import { Service, ServiceBroker } from "moleculer";
 import ApiGateway from "moleculer-web";
-import { startListers } from "../src/index"
-import { prefix } from "../src/config"
+import { startListers } from "../src/index";
+import { prefix } from "../src/config";
 export default class ApiService extends Service {
 	public constructor(broker: ServiceBroker) {
 		super(broker);
-		startListers()
+		startListers();
 		// @ts-ignore
 		this.parseServiceSchema({
 			name: "api",

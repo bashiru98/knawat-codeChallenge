@@ -9,25 +9,27 @@ interface UserPayload {
 	createdAt: Date;
 }
 
-const registerHelper = async (userData:UserPayload,_client:any):Promise<string> => {
-    try {
-        const res = await _client.index({
-            index: userData.collection,
-            id:userData.email,
-            type:"user_data",
-            body: {
-                "userId": userData.userId,
-                "email": userData.email,
-                "password": userData.password,
-                "username": userData.username,
-                "createdAt": userData.createdAt,
-            },
-        });
-        
-      return JSON.stringify(res.body?._id)
-    } catch (err) {
-        console.info(err);
-    }
-}
+const registerHelper = async (
+	userData: UserPayload,
+	_client: any
+): Promise<string> => {
+	try {
+		const res = await _client.index({
+			index: userData.collection,
+			id: userData.email,
+			type: "user_data",
+			body: {
+				userId: userData.userId,
+				email: userData.email,
+				password: userData.password,
+				username: userData.username,
+				createdAt: userData.createdAt,
+			},
+		});
+		return JSON.stringify(res.body?._id);
+	} catch (err) {
+		console.info(err);
+	}
+};
 
-export { registerHelper }
+export { registerHelper };
