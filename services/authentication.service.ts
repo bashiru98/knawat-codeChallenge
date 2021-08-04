@@ -1,6 +1,5 @@
 "use strict";
-
-import { v4 as uuidv4 } from "uuid";
+import { Register } from "../src/api/register";
 import { Password } from "../src/utils/password"
 import Validate from "../src/utils/validators"
 import { Service, ServiceBroker } from "moleculer";
@@ -24,29 +23,7 @@ export default class AuthenticationService extends Service {
 				entityValidator: Validate.user
 			},
 			methods: {
-				/**
-				 * Generate a JWT token from user entity
-				 *
-				 * @param {Object} user
-				 */
-				getToken(user) {
-                  return Token.generateToken(user)
-				},
-
-				/**
-				 * Transform returned user entity. Generate JWT token if neccessary.
-				 *
-				 * @param {Object} user
-				 * @param {Boolean} withToken
-				 */
-				transformEntity(user, withToken, token) {
-					if (user) {
-						if (withToken) {
-							user.token = token || this.getToken(user);
-						}
-					}
-					return { user };
-				},
+				
 			},
 			actions: {
 				/**
@@ -62,49 +39,9 @@ export default class AuthenticationService extends Service {
 						user: { type: "object" },
 					},
 					async handler(ctx) {
-						const userId = uuidv4();
 						const entity = ctx.params.user;
 						await this.validateEntity(entity);
-
-						const userExist =
-							await new UserAction().checkIfEmailExist(
-								entity.email
-							);
-						if (userExist) {
-							throw new MoleculerClientError(
-								"Email already exist!",
-								400,
-								"",
-							);
-						}
-
-						entity.password = await Password.toHash(entity.password)
-
-						entity.createdAt = new Date();
-
-						const userData = {
-							userId,
-							email: entity.email,
-							password: entity.password,
-							username: entity.username,
-							collection: "users",
-							createdAt: entity.createdAt,
-						};
-					    new UserAction().createUser(userData);
-
-						const user = await this.transformDocuments(
-							ctx,
-							{},
-							userData,
-						);
-						const json = await this.transformEntity(
-							user,
-							true,
-							ctx.meta.token
-						);
-						await this.entityChanged("created", json, ctx);
-
-						return json;
+						await new Register(entity,this.broker).$handler(ctx)
 					},
 				},
 				login: {
