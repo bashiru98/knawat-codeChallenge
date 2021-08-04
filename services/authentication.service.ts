@@ -49,19 +49,8 @@ export default class AuthenticationService extends Service {
 					},
 				},
 				login: {
-					rest: {
-						method: "POST",
-						path: "/login",
-					},
-					params: {
-						user: {
-							type: "object",
-							props: {
-								email: { type: "email" },
-								password: { type: "string", min: 1 },
-							},
-						},
-					},
+					rest: { ...Login.rest },
+					params: { ...Login.params },
 					async handler(ctx) {
 						try {
 							
