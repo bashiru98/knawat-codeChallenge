@@ -24,14 +24,7 @@ export default class AuthenticationService extends Service {
 				entityValidator: Validate.user
 			},
 			methods: {
-				transformEntity(user, withToken, token) {
-					if (user) {
-						if (withToken) {
-							user.token = token || this.getToken(user);
-						}
-					}
-					return { user };
-				},
+
 			},
 			actions: {
 				/**
