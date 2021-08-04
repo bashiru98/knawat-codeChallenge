@@ -1,6 +1,7 @@
 import { Service, ServiceBroker } from "moleculer";
 import ApiGateway from "moleculer-web";
 import { startListers } from "../src/index"
+import { prefix } from "../src/config"
 export default class ApiService extends Service {
 	public constructor(broker: ServiceBroker) {
 		super(broker);
@@ -14,7 +15,7 @@ export default class ApiService extends Service {
 
 				routes: [
 					{
-						path: "/api",
+						path: prefix,
 						whitelist: [
 							// Access to any actions in all services under "/api" URL
 							"**",

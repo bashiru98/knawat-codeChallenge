@@ -1,7 +1,7 @@
 "use strict";
 
 import { Service, ServiceBroker, ServiceSchema } from "moleculer";
-
+import Validate from "../src/utils/validators"
 import DbConnection from "../mixins/db.mixin";
 import CartActions from "../src/services/products/cartActions"
 export default class ProductsService extends Service{
@@ -15,22 +15,8 @@ export default class ProductsService extends Service{
 			name: "products",
 			mixins: [this.DbMixin],
 			settings: {
-				// Available fields in the responses
-				fields: [
-					"_id",
-					"name",
-					"quantity",
-					"price",
-				],
-
-				// Validator for the `create` & `insert` actions.
-				entityValidator: {
-					name: "string|min:3",
-					price: "number|positive",
-					productId: "string",
-					qauntity: "number|positive",
-					
-				},
+				// Validator for cart creation.
+				entityValidator: Validate.product,
 			},
 			actions: {
 				addProductToCart: {
