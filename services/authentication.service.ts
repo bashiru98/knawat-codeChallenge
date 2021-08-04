@@ -31,10 +31,7 @@ export default class AuthenticationService extends Service {
 				 *
 				 */
 				register: {
-					rest: {
-						method: "POST",
-						path: "/register",
-					},
+					rest: { ...Register.rest },
 					params: {
 						user: { type: "object" },
 					},

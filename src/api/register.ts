@@ -13,7 +13,7 @@ export class Register extends Service{
     static param = {
         user: { type: "object" },
     }
-    static rest = {
+    static rest : {
         method: "POST",
         path: "/register",
     }
@@ -76,3 +76,4 @@ export class Register extends Service{
     }
    
 }
+
