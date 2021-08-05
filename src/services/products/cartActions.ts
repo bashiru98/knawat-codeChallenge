@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use strict";
 
 // @ts-expect-error
@@ -22,7 +26,8 @@ class CartActions {
 	private query = query;
 
 	public data: any = null;
-	constructor(public userId: string, data: any) {
+
+	constructor(public userId: string, _: any) {
 		this.userId = userId;
 		this.data = {};
 		this.data.totals = 0;
@@ -33,7 +38,7 @@ class CartActions {
 			minimumFractionDigits: 2,
 		});
 	}
-	public async createCart(product: Product) {
+	public async createCart(product: Product): Promise<any>{
 		const res = await this.elasticClient.index({
 			index: "products",
 			id: product._id,

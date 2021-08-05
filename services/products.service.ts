@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use strict";
 
-import { Service, ServiceBroker, ServiceSchema } from "moleculer";
+import { Service, ServiceBroker } from "moleculer";
 import Validate from "../src/utils/validators";
 import DbConnection from "../mixins/db.mixin";
 import { AddToCart } from "../src/api/addToCart";

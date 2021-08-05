@@ -7,7 +7,8 @@ import Validate from "../src/utils/validators";
 import { userSchema } from "../src/models/user";
 import DbConnection from "../mixins/db.mixin";
 import { UserAction } from "../src/services/users/index";
-const { MoleculerClientError } = require("moleculer").Errors;
+
+import { Errors } from "moleculer"
 
 export default class AuthenticationService extends Service {
 	private DbMixin = new DbConnection("users").start();
@@ -68,7 +69,7 @@ export default class AuthenticationService extends Service {
 							);
 						} catch (err) {
 							console.log("catch", err);
-							throw new MoleculerClientError(
+							throw new Errors.MoleculerClientError(
 								"invalid credentials",
 								400,
 								""

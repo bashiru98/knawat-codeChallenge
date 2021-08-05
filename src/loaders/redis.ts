@@ -1,11 +1,12 @@
 "use strict";
 
-const { MoleculerClientError } = require("moleculer").Errors;
-const redis = require("redis");
-const util = require("util");
+import  { Errors } from "moleculer";
+import redis from "redis";
+
+// to be used just in case broker cacher is not working
 
 const client = redis.createClient({ host: process.env.REDIS_URL ?? "127.0.0.1" });
-client.hget = util.promisify(client.hget);
+
 
 client.on("connect", async () => {
 
@@ -18,7 +19,7 @@ client.on("ready", () => {
 
 client.on("error", (err: Error) => {
     console.log(err.message);
-    throw new MoleculerClientError("Redis client connection error");
+    throw new Errors.MoleculerClientError("Redis client connection error");
 });
 
 

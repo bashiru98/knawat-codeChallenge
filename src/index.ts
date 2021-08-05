@@ -1,6 +1,6 @@
 import { client } from "./loaders/elastic";
 
-const startListers = () => {
+const startListers = ():void => {
 	if (client) {
 		client.ping(function (error: Error) {
 			if (error) {
