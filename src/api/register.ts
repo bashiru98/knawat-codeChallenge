@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use strict";
 import { Mixin } from "ts-mixer";
-const { MoleculerClientError } = require("moleculer").Errors;
+
+import { Errors } from "moleculer"
 
 import { Token } from "../utils/token";
 import { UserPayload } from "../utils/types";
@@ -23,7 +26,7 @@ export class Register extends Mixin(Password, Token, UserAction) {
 	public async $handler(ctx: any, user: any): Promise<any> {
 		const userExist = await super.checkIfEmailExist(this.entity.email);
 		if (userExist) {
-			throw new MoleculerClientError("Email already exist!", 400, "");
+			throw new Errors.MoleculerClientError("Email already exist!", 400, "");
 		}
 		user.password = await super.toHash(this.entity.password);
 		super.createUser(user);
@@ -37,10 +40,11 @@ export class Register extends Mixin(Password, Token, UserAction) {
 		return json;
 	}
 
-	public getToken(user: UserPayload) {
+	public getToken(user: UserPayload):Promise<string> {
 		return super.generateToken(user);
 	}
-	public async transformEntity(user: any, withToken: boolean, token: string) {
+	
+	public async transformEntity(user: any, withToken: boolean, token: string):Promise<any> {
 		if (user) {
 			if (withToken) {
 				user.token = token || (await this.getToken(user));

@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 "use strict";
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import MongoAdapter from "moleculer-db-adapter-mongo";
 import { Context, Service, ServiceSchema } from "moleculer";

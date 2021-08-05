@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use strict";
 
-const checkEmail = async (email: string, _client: any) => {
+const checkEmail = async (email: string, _client: any):Promise<boolean> => {
 	const res = await _client.search({
 		index: "users",
 		_source: ["email", "userId", "username", "createdAt"],

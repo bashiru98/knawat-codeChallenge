@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 "use strict";
 
 import { Mixin } from "ts-mixer";
-const { MoleculerClientError } = require("moleculer").Errors;
+
+import { Errors } from "moleculer"
 
 import { Token } from "../utils/token";
 import { UserPayload } from "../utils/types";
@@ -29,29 +32,29 @@ export class Login extends Mixin(Password, Token, UserAction) {
 		const user = await super.getUser(ctx.params.user.email);
 		console.log("user data", user);
 		if (!user) {
-			throw new MoleculerClientError(
+			throw new Errors.MoleculerClientError(
 				"Email or password is invalid!",
 				400,
 				"",
 				[{ field: "email", message: "is not found" }]
 			);
 		}
-		// @ts-ignore
+
 		const res = await super.compare(
 			JSON.parse(user).password,
 			ctx.params.user.password
 		);
 		if (!res) {
 			// Let the error be generic
-			throw new MoleculerClientError("invalid password ", 422, "");
+			throw new Errors.MoleculerClientError("invalid password ", 422, "");
 		}
 		return user;
 	}
-	public getToken(user: UserPayload) {
-		// @ts-ignore
+
+	public getToken(user: UserPayload) :Promise<string>{
 		return super.generateToken(user);
 	}
-	public async transformEntity(user: any, withToken: boolean, token: string) {
+	public async transformEntity(user: any, withToken: boolean, token: string):Promise<any> {
 		if (user) {
 			if (withToken) {
 				user.token = token || (await this.getToken(user));

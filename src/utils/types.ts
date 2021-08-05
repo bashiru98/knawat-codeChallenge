@@ -6,6 +6,7 @@ export interface UserPayload {
 	email: string;
 	createdAt: string;
 	exp: Date;
+	token?:string;
 }
 
-export interface Product {}
+

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use strict";
 
 import { client } from "../../loaders/elastic";
@@ -16,9 +17,9 @@ interface UserPayload {
 export class UserAction {
 	public _client: any = client;
 
-	public async createIndex(collection: string) {
+	public async createIndex(collection: string):Promise<void> {
 		try {
-			this._client.indices.create({
+			await this._client.indices.create({
 				index: collection,
 			});
 			console.info("index created");
@@ -31,11 +32,11 @@ export class UserAction {
 		return await checkEmail(email, this._client);
 	}
 
-	public async createUser(userData: UserPayload) {
+	public async createUser(userData: UserPayload): Promise<string>{
 		return await registerHelper(userData, this._client);
 	}
 
-	public async getUser(email: string) {
+	public async getUser(email: string):Promise<string> {
 		return await fetchUser(email, this._client);
 	}
 }
