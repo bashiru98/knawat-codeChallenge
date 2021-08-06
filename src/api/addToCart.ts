@@ -14,7 +14,7 @@ export class AddToCart  {
 		const entity = ctx.params.product;
 
 		await new CartActions(ctx.params.userId, null).createCart(entity);
-
+        
 		return { message: "Item added to cart" };
 	}
 }

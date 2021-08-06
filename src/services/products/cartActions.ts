@@ -13,6 +13,7 @@ interface Product {
 	price: number;
 	name: string;
 	quantity: number;
+	productId:string;
 }
 const Q = eb.Q;
 const query = eb.QueryBuilder();
@@ -23,7 +24,7 @@ class CartActions {
 	public cacheValue: string;
 
 	private elasticClient = client;
-	private query = query;
+	private query = query.filter(Q("terms", "userId", [this.userId]));
 
 	public data: any = null;
 
@@ -39,13 +40,14 @@ class CartActions {
 		});
 	}
 	public async createCart(product: Product): Promise<any>{
+         console.log("data", product)
 		const res = await this.elasticClient.index({
-			index: "products",
-			id: product._id,
-			type: "product_data",
+			index: this.userId,
+			type:"product_data",
+			id: product.productId,
 			body: {
 				name: product.name,
-				productId: product._id,
+				productId: product.productId,
 				userId: this.userId,
 				quantity: product.quantity,
 				price: product.price,
@@ -57,12 +59,10 @@ class CartActions {
 	}
 
 	public async getCartSummary(): Promise<any> {
-		this.query.filter(Q("terms", "userId", [this.userId]));
+    try {
 		const res = await this.elasticClient.search({
-			index: "products",
-			type: "product_data",
+			index: this.userId,		
 			body: {
-				query,
 				aggs: {
 					sum_total: {
 						sum: {
@@ -77,14 +77,18 @@ class CartActions {
 				},
 			},
 		});
-		this.data = {
+		console.log("from elasticsearch", JSON.stringify(res.body.hits))
+		return  { cartSummary: {
 			cartItems: res.body?.hits.hits,
 			totalQuantity: res.body?.aggregations.quantity_total.value,
 			totalPrice: this.formatter.format(
 				res.body?.aggregations.sum_total.value
 			),
-		};
-		return { cartSummary: this.data };
+		} };
+	} catch (error) {
+		console.log("error in code" ,error)
+	}
+		
 	}
 }
 
