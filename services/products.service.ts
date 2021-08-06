@@ -30,7 +30,7 @@ export default class ProductsService extends Service {
 							async handler(ctx) {
 								const entity = ctx.params.product;
 								await this.validateEntity(entity);
-								await this.broker.cacher.del(ctx.params.userId);
+								await this.broker.cacher.clean(ctx.params.userId);
 								return await new AddToCart().$handler(ctx);
 							},
 						},
@@ -38,23 +38,29 @@ export default class ProductsService extends Service {
 							rest: GetCartSummary.rest,
 							params: { ...GetCartSummary.params },
 							async handler(ctx) {
-								const cache = await this.broker.cacher.get(
-									ctx.params.userId
-								);
-								if (cache) {
-									// @ts-expect-error
-									return JSON.parse(cache);
+								try {
+									const cache = await this.broker.cacher.get(
+										ctx.params.userId
+									);
+									if (cache) {
+										console.log("from cache",cache)
+										// @ts-expect-error
+										return JSON.parse(cache);
+									}
+									const res = await new GetCartSummary().$handler(
+										ctx
+									);
+	
+									await this.broker.cacher.set(
+										ctx.params.userId,
+										JSON.stringify(res)
+									);
+	
+									return res;
+								} catch (error) {
+									return {message:"no items in your cart"}
 								}
-								const res = await new GetCartSummary().$handler(
-									ctx
-								);
-
-								await this.broker.cacher.set(
-									ctx.params.userId,
-									JSON.stringify(res)
-								);
-
-								return res;
+								
 							},
 						},
 					},

@@ -83,7 +83,7 @@ services:
         soft: 262144
         hard: 262144
     volumes:
-      - data01:/usr/share/elasticsearch/data
+      - dataES:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
@@ -119,5 +119,5 @@ networks:
 
 volumes:
   data:
-  data01:
+  dataES:
     driver: local
