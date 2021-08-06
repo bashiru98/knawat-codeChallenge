@@ -8,13 +8,13 @@ export class AddToCart  {
 		userId: "string";
 		product: { type: "object" };
 	};
-	static rest = "POST /:userId/cart";
+	static rest = "POST /cart/:userId";
 	public async $handler(ctx: any):Promise<{message:string}> {
 
 		const entity = ctx.params.product;
 
 		await new CartActions(ctx.params.userId, null).createCart(entity);
-		
+
 		return { message: "Item added to cart" };
 	}
 }
