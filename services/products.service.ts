@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 "use strict";
@@ -11,7 +12,7 @@ export default class ProductsService extends Service {
 	private DbMixin = new DbConnection("products").start();
 
 	// @ts-ignore
-	public constructor(public broker: ServiceBroker, schema: any = {}) {
+	public constructor(public broker: ServiceBroker, schema:ServiceSchema<{}> = {}) {
 		super(broker);
 		this.parseServiceSchema(
 			Service.mergeSchemas(
