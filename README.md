@@ -1,6 +1,7 @@
 ## usages.
 
 -Please make sure docker is install / docker desktop with support for docker compose
+- make sure docker daemaon is running
 
 
 ## NPM scripts
