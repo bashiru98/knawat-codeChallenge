@@ -5,7 +5,7 @@ import redis from "redis";
 
 // to be used just in case broker cacher is not working
 
-const client = redis.createClient({ host: process.env.REDIS_URL ?? "127.0.0.1" });
+const client = redis.createClient({ host: process.env.REDIS_URL || "127.0.0.1" });
 
 
 client.on("connect", async () => {

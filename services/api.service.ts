@@ -1,17 +1,18 @@
 import { Service, ServiceBroker } from "moleculer";
 import ApiGateway from "moleculer-web";
-
+// import { startListers } from "../src/index";
 import { prefix } from "../src/config";
 export default class ApiService extends Service {
 	public constructor(broker: ServiceBroker) {
 		super(broker);
+		// startListers()
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore
 		this.parseServiceSchema({
 			name: "api",
 			mixins: [ApiGateway],
 			settings: {
-				port: process.env.PORT || 5000,
+				port: process.env.PORT || 3000,
 
 				routes: [
 					{
