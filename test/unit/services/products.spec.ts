@@ -21,8 +21,8 @@ describe("Test 'products api ", () => {
 		
 
     it("return an error when name of product is missing ", () => {
-        return request(apiService.server)
-            .get("/api/products/sadia/cart/summary")
+        return request(apiService.server())
+            .get("/api/products/cart/summary/bashiru")
             .then(res => {
                 console.log(res.body)
                 expect(res.statusCode).toBe(404);

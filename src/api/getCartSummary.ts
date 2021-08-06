@@ -7,7 +7,7 @@ export class GetCartSummary {
 	static params: {
 		userId: "string";
 	};
-	static rest = "GET /:userId/cart/summary";
+	static rest = "GET /cart/summary/:userId";
 
 	public async $handler(ctx: any) {
 		return await new CartActions(ctx.params.userId, null).getCartSummary();
