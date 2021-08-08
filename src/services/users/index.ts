@@ -22,7 +22,6 @@ export class UserAction {
 			await this._client.indices.create({
 				index: collection,
 			});
-			console.info("index created");
 		} catch (error) {
 			console.info("error", error);
 		}

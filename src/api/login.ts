@@ -30,7 +30,6 @@ export class Login extends Mixin(Password, Token, UserAction) {
 	}
 	public async $handler(ctx: any): Promise<any> {
 		const user = await super.getUser(ctx.params.user.email);
-		console.log("user data", user);
 		if (!user) {
 			throw new Errors.MoleculerClientError(
 				"Email or password is invalid!",

@@ -42,7 +42,6 @@ export default class AuthenticationService extends Service {
 							{},
 							{ ...userData }
 						);
-						console.log("user doc", user);
 						return await new Register(entity, { ...user }).$handler(
 							ctx,
 							user
@@ -55,8 +54,7 @@ export default class AuthenticationService extends Service {
 					async handler(ctx) {
 						try {
 							const user = await new Login().$handler(ctx);
-							// Transform user entity (remove password and all protected fields)
-							console.log("user", user);
+							
 							const doc = await this.transformDocuments(
 								ctx,
 								{},
