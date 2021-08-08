@@ -40,7 +40,6 @@ class CartActions {
 		});
 	}
 	public async createCart(product: Product): Promise<any>{
-         console.log("data", product)
 		const res = await this.elasticClient.index({
 			index: this.userId,
 			type:"product_data",
@@ -77,7 +76,6 @@ class CartActions {
 				},
 			},
 		});
-		console.log("from elasticsearch", JSON.stringify(res.body.hits))
 		return  { cartSummary: {
 			cartItems: res.body?.hits.hits,
 			totalQuantity: res.body?.aggregations.quantity_total.value,

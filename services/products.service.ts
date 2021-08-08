@@ -30,7 +30,7 @@ export default class ProductsService extends Service {
 							async handler(ctx) {
 								const entity = ctx.params.product;
 								await this.validateEntity(entity);
-								await this.broker.cacher.clean(ctx.params.userId);
+								await this.broker.cacher?.clean(ctx.params.userId);
 								return await new AddToCart().$handler(ctx);
 							},
 						},

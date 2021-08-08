@@ -5,7 +5,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 import MongoAdapter from "moleculer-db-adapter-mongo";
-import { Context, Service, ServiceSchema } from "moleculer";
+import { Service, ServiceSchema } from "moleculer";
 import DbService from "moleculer-db";
 
 export default class Connection
@@ -33,13 +33,7 @@ export default class Connection
 				},
 			},
 			methods: {
-				entityChanged: async (
-					type: string,
-					json: any,
-					ctx: Context
-				) => {
-					await ctx.broadcast(this.cacheCleanEventName);
-				},
+				
 			},
 		};
 	}
@@ -48,7 +42,7 @@ export default class Connection
 	public start() {
 
 		this.schema.adapter = new MongoAdapter(
-			process.env.MONGO_URI ?? "mongodb://localhost:27017/moleculer",
+			process.env.MONGO_URI || "mongodb://localhost:27017/moleculer",
 			
 				{ useUnifiedTopology: true }
 			
@@ -57,11 +51,11 @@ export default class Connection
 		return this.schema;
 	}
 
-	public get _collection(): string {
-		return this.collection;
-	}
+	// public get _collection(): string {
+	// 	return this.collection;
+	// }
 
-	public set _collection(value: string) {
-		this.collection = value;
-	}
+	// public set _collection(value: string) {
+	// 	this.collection = value;
+	// }
 }
