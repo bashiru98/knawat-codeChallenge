@@ -148,59 +148,8 @@ describe("Test 'authentication actions ", () => {
                 }
                 
             });
-            // it("throws an error if price field is not given",  async() => {
-                
-
-            //     try {
-            //         const res = await broker.call("products.addProductToCart", {
-            //          userId:"bashiru",
-            //          product: {  
-            //             productId: "dadad",
-            //             name:"323",
-            //             quantity:20
-                       
-            //         }
-            //         });
-            //     } catch (error) {
-            //         expect(error).toBeInstanceOf(Errors.ValidationError);
-            //        expect(error.data[0].field).toEqual("price")
-            //     }
-                
-            // });
-            // it("add product to cart",  async() => {
-                
-            //     try {
-            //         const res = await broker.call("products.addProductToCart", {
-            //          userId:"bashiru",
-            //          product: {  
-            //             productId: "dadad",
-            //             name:"323",
-            //             quantity:20,
-            //             price:2000
-                       
-            //         }
-            //         });
-            //         // @ts-ignore
-            //         expect(res).toEqual({ message: 'Item added to cart' })
-            //     } catch (error) {
-            //         console.info(error)
-            //     }
-                
-            // });
-            // it("get  cart summary with no items",  async() => {
-
-            //     try {
-            //         const res = await broker.call("products.getCartSummary", {
-            //          userId:"bashiru",
-            //         });
-            //         // @ts-ignore
-            //         expect(res).toEqual({ message: 'no items in your cart' })
-                    
-            //     } catch (error) {
-            //         console.log(error)
-            //     }
-                
-            // });
+            
+            
         })
 
 })
